@@ -12,7 +12,6 @@ import {
   type RouteModuleOptions,
 } from '../route-module'
 import {
-  synchronizeMutableCookies,
   withRequestStore,
   type RequestContext,
 } from '../../async-storage/with-request-store'
@@ -571,9 +570,10 @@ export class AppRouteRouteModule extends RouteModule<
     // here.
     const headers = new Headers(res.headers)
     if (workUnitStore.type === 'request') {
-      synchronizeMutableCookies(workUnitStore)
-
-      if (appendMutableCookies(headers, workUnitStore.mutableCookies)) {
+      if (
+        workUnitStore.type === 'request' &&
+        appendMutableCookies(headers, workUnitStore.mutableCookies)
+      ) {
         return new Response(res.body, {
           status: res.status,
           statusText: res.statusText,
